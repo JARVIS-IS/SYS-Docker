@@ -31,7 +31,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('http://localhost:3001', {
+            fetch('http://192.168.0.79:3001', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,19 +43,20 @@
                     console.log(data);
                     const containerTableBody = document.getElementById('containerTableBody');
                     const numberElement = document.getElementById('number');
-                    const dockernotturn = data.filter(container => !container.status.includes('Exited'));
+                    const dockerOn = data.filter(container => !container.status.includes('Exited') && container.name.includes('SYS'));
+                    const dockerAll = data.filter(container => container.name.includes('SYS'));
 
-                    numberElement.innerText = `${dockernotturn.length}/${data.length}`;
+                    numberElement.innerText = `${dockerOn.length}/${dockerAll.length}`;
 
                     data.forEach(container => {
-                        const row = `
+                        const row = `${container.name.includes('SYS') ? `
                     <tr ${container.status.includes('Exited') ? 'class="table-danger"' : ''}>
                         <td>${container.name}</td>
                         <td>${container.id}</td>
                         <td>${container.image}</td>
                         <td>${container.status}</td>
                         <td>${container.ports.length > 1 ? `${container.ports[0].PrivatePort}:${container.ports[0].PublicPort}` : 'N/A'}</td>
-                    </tr>
+                    </tr>`: ``}
                     `;
                         containerTableBody.innerHTML += row;
                     });
