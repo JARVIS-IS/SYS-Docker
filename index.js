@@ -42,8 +42,6 @@ app.post('', (req, res) => {
 			res.sendStatus(404);
 			res.send(error);
 		});
-
-	listContainers();
 });
 
 app.listen(port, () => console.log(`The SYS-Docker server runs on port ${port}`));
