@@ -11,9 +11,10 @@
 <body>
 
     <div class="container mt-5">
-        <div style="display: flex; justify-content: space-between;">
+        <div class="d-flex justify-content-between">
             <h2>Liste des Conteneurs</h2>
-            <h5 id="number">Chargement...</h5>
+            <h5></h5>
+            <h5><span id="number">Chargement...</span>, <span id="date"></span></h5>
         </div>
         <table class="table mt-3">
             <thead>
@@ -67,10 +68,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchInfo()
+            document.getElementById("date").innerHTML = new Date().getHours() + "H" + new Date().getMinutes()
         });
         setInterval(() => {
+            document.getElementById('containerTableBody').innerHTML = "";
+            document.getElementById("date").innerHTML = new Date().getHours() + "H" + new Date().getMinutes()
             fetchInfo()
-        }, 180000);
+        }, 15000);
     </script>
 
 </body>
