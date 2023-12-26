@@ -11,7 +11,10 @@
 <body>
 
     <div class="container mt-5">
-        <h2>Liste des Conteneurs</h2>
+        <div style="display: flex; justify-content: space-between;">
+            <h2>Liste des Conteneurs</h2>
+            <h5 id="number">Chargement...</h5>
+        </div>
         <table class="table mt-3">
             <thead>
                 <tr>
@@ -39,6 +42,11 @@
                 .then(data => {
                     console.log(data);
                     const containerTableBody = document.getElementById('containerTableBody');
+                    const numberElement = document.getElementById('number');
+                    const dockernotturn = data.filter(container => !container.status.includes('Exited'));
+
+                    numberElement.innerText = `${dockernotturn.length}/${data.length}`;
+
                     data.forEach(container => {
                         const row = `
                     <tr ${container.status.includes('Exited') ? 'class="table-danger"' : ''}>
