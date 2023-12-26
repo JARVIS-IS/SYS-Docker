@@ -1,4 +1,9 @@
 const Docker = require('dockerode');
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const port = 3001;
 
 async function listContainers() {
 	const docker = new Docker();
@@ -8,7 +13,7 @@ async function listContainers() {
 
 		const containerList = containers.map((container) => ({
 			name: container.Names[0].replace('/', ''),
-			id: container.Id,
+			id: container.Id.substring(0, 8),
 			image: container.Image,
 			status: container.Status,
 			ports: container.Ports,
@@ -20,10 +25,25 @@ async function listContainers() {
 	}
 }
 
-listContainers()
-	.then((containerList) => {
-		console.log(JSON.stringify(containerList, null, 2));
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+app.use(express.json());
+app.use(cors());
+
+app.post('', (req, res) => {
+	const token = req.body.token;
+	console.log(token);
+
+	console.log(req.body);
+
+	listContainers()
+		.then((containerList) => {
+			res.json(containerList);
+		})
+		.catch((error) => {
+			res.sendStatus(404);
+			res.send(error);
+		});
+
+	listContainers();
+});
+
+app.listen(port, () => console.log(`The SYS-Docker server runs on port ${port}`));
