@@ -15,15 +15,16 @@ SYS-Docker is a utility designed to streamline the execution of your Dockerized 
 
 2. **Run the Script:**
    Execute the main script using the following command:
-   `bash
-    node index.js
-    `
+
+    ```bash
+     node index.js
+    ```
 
 3. **Background Execution:**
    After running the script, you can detach from the session and leave the application running in the background by pressing:
-   `bash
-    ctrl a + d
-    `
+    ```bash
+     ctrl a + d
+    ```
 
 Now your Dockerized application should be up and running, managed by SYS-Docker.
 
