@@ -30,7 +30,7 @@
         </table>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function fetchInfo() {
             fetch('http://192.168.0.79:3001', {
                 method: 'POST',
                 headers: {
@@ -62,7 +62,15 @@
                     });
                 })
                 .catch(error => console.error('Erreur lors de la récupération des données:', error));
+
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchInfo()
         });
+        setInterval(() => {
+            fetchInfo()
+        }, 180000);
     </script>
 
 </body>
