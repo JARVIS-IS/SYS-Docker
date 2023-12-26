@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Info</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h2>Liste des Conteneurs</h2>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <th>Ports</th>
+                </tr>
+            </thead>
+            <tbody id="containerTableBody">
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('http://localhost:3001', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: 'votre_token' }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    const containerTableBody = document.getElementById('containerTableBody');
+                    data.forEach(container => {
+                        const row = `
+                    <tr ${container.status.includes('Exited') ? 'class="table-danger"' : ''}>
+                        <td>${container.name}</td>
+                        <td>${container.id}</td>
+                        <td>${container.image}</td>
+                        <td>${container.status}</td>
+                        <td>${container.ports.length > 1 ? `${container.ports[0].PrivatePort}:${container.ports[0].PublicPort}` : 'N/A'}</td>
+                    </tr>
+                    `;
+                        containerTableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données:', error));
+        });
+    </script>
+
+</body>
+
+</html>
