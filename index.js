@@ -92,6 +92,21 @@ async function getInfo() {
 	}
 }
 
+async function getPort(name) {
+	try {
+		const fileContent = await fs.readFile('info.json', 'utf-8');
+		const info = JSON.parse(fileContent);
+		const port = info[name];
+
+		return {
+			port,
+		};
+	} catch (error) {
+		console.error('Error reading or parsing info.json:', error.message);
+		throw error;
+	}
+}
+
 app.use(express.json());
 app.use(cors());
 
@@ -112,8 +127,8 @@ app.post('', (req, res) => {
 	if (req.body.request == 'last') {
 		if (req.body.category) {
 			getLast(req.body.category)
-				.then((port) => {
-					res.json(port);
+				.then((last) => {
+					res.json(last);
 				})
 				.catch((error) => {
 					res.sendStatus(404);
@@ -125,13 +140,27 @@ app.post('', (req, res) => {
 	}
 	if (req.body.request == 'info') {
 		getInfo()
-			.then((port) => {
-				res.json(port);
+			.then((info) => {
+				res.json(info);
 			})
 			.catch((error) => {
 				res.sendStatus(404);
 				res.send(error);
 			});
+	}
+	if (req.body.request == 'port') {
+		if (req.body.name) {
+			getPort(req.body.name)
+				.then((port) => {
+					res.json(port);
+				})
+				.catch((error) => {
+					res.sendStatus(404);
+					res.send(error);
+				});
+		} else {
+			res.send('Undefined name');
+		}
 	}
 });
 
