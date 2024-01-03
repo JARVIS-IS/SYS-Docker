@@ -20,10 +20,8 @@
             <thead>
                 <tr>
                     <th>Nom</th>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Status</th>
                     <th>Ports</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="containerTableBody">
@@ -32,7 +30,7 @@
     </div>
     <script>
         function fetchInfo() {
-            fetch('http://192.168.0.97:3001', {
+            fetch('http://localhost:3000', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,20 +42,17 @@
                     console.log(data);
                     const containerTableBody = document.getElementById('containerTableBody');
                     const numberElement = document.getElementById('number');
-                    const dockerOn = data.filter(container => !container.status.includes('Exited') && container.name.includes('SYS'));
-                    const dockerAll = data.filter(container => container.name.includes('SYS'));
+                    const dockerOn = data.filter(container => !container.status.includes('ERROR'));
 
-                    numberElement.innerText = `${dockerOn.length}/${dockerAll.length}`;
+                    numberElement.innerText = `${dockerOn.length}/${data.length}`;
 
                     data.forEach(container => {
-                        const row = `${container.name.includes('SYS') ? `
-                    <tr ${container.status.includes('Exited') ? 'class="table-danger"' : ''}>
+                        const row = `
+                    <tr ${container.status.includes('ERROR') ? 'class="table-danger"' : ''}>
                         <td>${container.name}</td>
-                        <td>${container.id}</td>
-                        <td>${container.image}</td>
+                        <td>${container.ports}</td>
                         <td>${container.status}</td>
-                        <td>${container.ports.length > 1 ? `${container.ports[0].PrivatePort}:${container.ports[0].PublicPort}` : 'N/A'}</td>
-                    </tr>`: ``}
+                    </tr>
                     `;
                         containerTableBody.innerHTML += row;
                     });

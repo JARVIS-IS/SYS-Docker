@@ -1,27 +1,48 @@
-const Docker = require('dockerode');
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs').promises;
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
-async function listContainers() {
-	const docker = new Docker();
-
+const fetchStatus = async (name, port) => {
 	try {
-		const containers = await docker.listContainers({ all: true });
+		const response = await fetch(`http://localhost:${port}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				type: 'status',
+			}),
+		});
 
-		const containerList = containers.map((container) => ({
-			name: container.Names[0].replace('/', ''),
-			id: container.Id.substring(0, 8),
-			image: container.Image,
-			status: container.Status,
-			ports: container.Ports,
-		}));
+		return response.ok ? 'OK' : 'ERROR';
+	} catch (error) {
+		return 'ERROR';
+	}
+};
+
+async function getStatus() {
+	try {
+		const fileContent = await fs.readFile('info.json', 'utf-8');
+		const info = JSON.parse(fileContent);
+
+		const containerList = await Promise.all(
+			Object.entries(info).map(async ([name, port]) => {
+				const status = await fetchStatus(name, port);
+
+				return {
+					name: name,
+					ports: port,
+					status: status,
+				};
+			})
+		);
 
 		return containerList;
 	} catch (error) {
-		return { error: 'Erreur lors de la récupération de la liste des conteneurs' };
+		console.error('Error reading or parsing info.json:', error.message);
 	}
 }
 
@@ -34,7 +55,7 @@ app.post('', (req, res) => {
 
 	console.log(req.body);
 
-	listContainers()
+	getStatus()
 		.then((containerList) => {
 			res.json(containerList);
 		})
