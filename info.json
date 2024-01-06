@@ -1,6 +1,6 @@
 {
-    "Main": 1000,
-    "INT-Terminal": 2000,
+    "Main": 2000,
+    "INT-Terminal": 2001,
     "SYS-TokenGenerator": 3001,
     "SYS-ManageData": 3002,
     "SYS-SendMail": 3003,
