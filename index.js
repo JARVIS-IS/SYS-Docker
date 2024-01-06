@@ -124,47 +124,53 @@ app.post('/status', (req, res) => {
 		});
 });
 
-app.post('', (req, res) => {
+app.post('/last', (req, res) => {
 	const token = req.body.token;
 	console.log(token);
 
-	if (req.body.request == 'last') {
-		if (req.body.category) {
-			getLast(req.body.category)
-				.then((last) => {
-					res.json(last);
-				})
-				.catch((error) => {
-					res.sendStatus(404);
-					res.send(error);
-				});
-		} else {
-			res.send('Undefined category');
-		}
-	}
-	if (req.body.request == 'info') {
-		getInfo()
-			.then((info) => {
-				res.json(info);
+	if (req.body.category) {
+		getLast(req.body.category)
+			.then((last) => {
+				res.json(last);
 			})
 			.catch((error) => {
 				res.sendStatus(404);
 				res.send(error);
 			});
+	} else {
+		res.send('Undefined category');
 	}
-	if (req.body.request == 'port') {
-		if (req.body.name) {
-			getPort(req.body.name)
-				.then((port) => {
-					res.json(port);
-				})
-				.catch((error) => {
-					res.sendStatus(404);
-					res.send(error);
-				});
-		} else {
-			res.send('Undefined name');
-		}
+});
+
+app.post('/info', (req, res) => {
+	const token = req.body.token;
+	console.log(token);
+
+	getInfo()
+		.then((info) => {
+			res.json(info);
+		})
+		.catch((error) => {
+			res.sendStatus(404);
+			res.send(error);
+		});
+});
+
+app.post('/port', (req, res) => {
+	const token = req.body.token;
+	console.log(token);
+
+	if (req.body.name) {
+		getPort(req.body.name)
+			.then((port) => {
+				res.json(port);
+			})
+			.catch((error) => {
+				res.sendStatus(404);
+				res.send(error);
+			});
+	} else {
+		res.send('Undefined name');
 	}
 });
 
