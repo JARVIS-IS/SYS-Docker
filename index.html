@@ -16,6 +16,9 @@
             <h5></h5>
             <h5><span id="number">Chargement...</span>, <span id="date"></span></h5>
         </div>
+        <div>
+            <div id="categoryInfo" class="d-flex justify-content-center"></div>
+        </div>
         <table class="table mt-3">
             <thead>
                 <tr>
@@ -29,13 +32,13 @@
         </table>
     </div>
     <script>
-        function fetchInfo() {
-            fetch('http://localhost:3000', {
+        function fetchStatus() {
+            fetch('http://192.168.0.97:3000', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ token: 'votre_token' }),
+                body: JSON.stringify({ token: 'votre_token', request: "status" }),
             })
                 .then(response => response.json())
                 .then(data => {
@@ -61,14 +64,39 @@
 
         }
 
+        function fetchInfo() {
+            fetch('http://localhost:3000', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: 'votre_token', request: "info" }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+
+                    const categoryInfoElement = document.getElementById('categoryInfo');
+                    categoryInfoElement.innerHTML = Object.entries(data.categoryCount)
+                        .map(([category, count]) => `<span style="margin: 5px">${category} : ${count}</span>`)
+                        .join('');
+
+                    // const totalContainersElement = document.getElementById('totalContainers');
+                    // totalContainersElement.innerText = `Total Containers: ${data.totalContainers}`;
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données:', error));
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
-            fetchInfo()
+            // fetchInfo()
+            fetchStatus()
             document.getElementById("date").innerHTML = new Date().getHours() + "H" + new Date().getMinutes()
         });
         setInterval(() => {
             document.getElementById('containerTableBody').innerHTML = "";
             document.getElementById("date").innerHTML = new Date().getHours() + "H" + new Date().getMinutes()
-            fetchInfo()
+            fetchStatus()
         }, 15000);
     </script>
 
