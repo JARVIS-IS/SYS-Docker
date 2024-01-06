@@ -7,7 +7,7 @@ const port = 3000;
 
 const fetchStatus = async (name, port) => {
 	try {
-		const response = await fetch(`http://172.24.0.1:${port}`, {
+		const response = await fetch(`http://172.24.0.1:${port}/status`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
