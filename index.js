@@ -110,20 +110,24 @@ async function getPort(name) {
 app.use(express.json());
 app.use(cors());
 
+app.post('/status', (req, res) => {
+	const token = req.body.token;
+	console.log(token);
+
+	getStatus()
+		.then((containerList) => {
+			res.json(containerList);
+		})
+		.catch((error) => {
+			res.sendStatus(404);
+			res.send(error);
+		});
+});
+
 app.post('', (req, res) => {
 	const token = req.body.token;
 	console.log(token);
 
-	if (req.body.request == 'status') {
-		getStatus()
-			.then((containerList) => {
-				res.json(containerList);
-			})
-			.catch((error) => {
-				res.sendStatus(404);
-				res.send(error);
-			});
-	}
 	if (req.body.request == 'last') {
 		if (req.body.category) {
 			getLast(req.body.category)
